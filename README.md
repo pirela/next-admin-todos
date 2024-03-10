@@ -6,6 +6,15 @@ Pasos para levantar la app en desarrollo
 docker compose up -d
 ```
 
-2. 
+2. Renombar el .env.template a .env
+
+3. Reemplazar las variables de entorno
+
+# Prisma
+```
+npx prisma init
+npx prisma migrate dev
+npx prisma generate
+```
 
 # Prod - Stage 
