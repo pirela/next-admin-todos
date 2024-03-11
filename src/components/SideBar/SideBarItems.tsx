@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation";
-import { CiBookmarkCheck } from "react-icons/ci"
 
 interface Props {
     icon: React.ReactNode;
@@ -10,7 +9,6 @@ interface Props {
     title: string;
 }
 
-{/* Active className:  */ }
 export const SideBarItems = ({ icon, path, title }: Props) => {
     const pathName = usePathname()
     return (
