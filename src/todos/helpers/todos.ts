@@ -38,3 +38,15 @@ export const updateTodo = async ({ id, complete }: PropsUpdateTodo): Promise<Tod
 
     return todo
 }
+
+export const deleteCompletedTodo = async (): Promise<boolean> => {
+
+    await fetch(`/api/todos/`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+
+    return true
+}
