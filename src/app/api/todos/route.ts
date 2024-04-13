@@ -1,3 +1,4 @@
+import { getUserServerSession } from '@/auth/components/actions/auth-actions'
 import prisma from '@/lib/prisma'
 import { NextResponse, NextRequest } from 'next/server'
 import * as yup from 'yup'
@@ -30,11 +31,16 @@ const postSchema = yup.object({
 
 export async function POST(request: Request) { 
     try {
+        const user =  await getUserServerSession()
+        if(!user){
+            return null
+        }
         const { complete, description} = await postSchema.validate( await request.json() )
         const todo = await prisma.todo.create({
             data: {
                 complete,   
-                description
+                description,
+                userId: user?.id 
             }
         })
     

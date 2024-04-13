@@ -45,7 +45,7 @@ export default function CartPage() {
                 <div className="flex flex-col gap-2 w-full sm:w-8/12">
                     {
                         productsInCart.map(({ product, quantity }) => (
-                            <ItemCard product={product} quantity={quantity} />
+                            <ItemCard key={product.id} product={product} quantity={quantity} />
                         ))
                     }
                 </div>

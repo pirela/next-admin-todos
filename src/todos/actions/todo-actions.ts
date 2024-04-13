@@ -1,8 +1,10 @@
 'use server'
 
+import { getUserServerSession } from '@/auth/components/actions/auth-actions';
 import prisma from '@/lib/prisma';
 import { Todo } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+import { NextResponse } from 'next/server';
 
 interface PropsToggleTodo {
     id: string;
@@ -18,7 +20,8 @@ export const sleep = async(seconds: number = 0) => {
 }
 export const addTodo = async ({ description }: { description: string }) => {
     try {
-        const todo = await prisma.todo.create({ data: { description } })
+        const user =  await getUserServerSession()
+        const todo = await prisma.todo.create({ data: { description, userId: user?.id || '' } })
         revalidatePath('/dasboard/server-todos')
         return todo
     } catch (error) {
@@ -29,7 +32,12 @@ export const addTodo = async ({ description }: { description: string }) => {
 }
 
 export const toggleTodo = async ({ id, complete }: PropsToggleTodo): Promise<Todo> => {
-    await sleep(3)
+
+    const user =  await getUserServerSession()
+    if(!user){
+        NextResponse.json('No autorizado', {status: 401})
+    }
+    //await sleep(3)
     const todo = await prisma.todo.findFirst({ where: { id } })
 
     if (!todo) { throw `Todo con id ${id} no encontrado` }
@@ -46,6 +54,11 @@ export const toggleTodo = async ({ id, complete }: PropsToggleTodo): Promise<Tod
 }
 
 export const deleteCompletedTodos = async (): Promise<void> => {
-    await prisma.todo.deleteMany({ where: { complete: true } })
+    const user =  await getUserServerSession()
+    if(!user){
+        NextResponse.json('No autorizado', {status: 401})
+    }
+
+    await prisma.todo.deleteMany({ where: { complete: true, userId: user?.id } })
     revalidatePath('/dasboard/server-todos')
 }
